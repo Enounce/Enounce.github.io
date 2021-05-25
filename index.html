@@ -1,18 +1,203 @@
+
 <!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Leaflet Destinations Panal</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+
+  <style id="compiled-css" type="text/css">
+      html, body{  
+   height: 100%;
+   width: 100%;
+}
+
+
+ #map-div {
+   height: 100%;
+   width: 100%;
+}
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+    <script src="/js/stringify.js?52c580aef7aa99af3b5f5e894938ffee58cc70e5" charset="utf-8"></script>
+    <script>
+      const customConsole = (w) => {
+        const pushToConsole = (payload, type) => {
+          w.parent.postMessage({
+            console: {
+              payload: stringify(payload),
+              type:    type
+            }
+          }, "*")
+        }
+
+        w.onerror = (message, url, line, column) => {
+          // the line needs to correspond with the editor panel
+          // unfortunately this number needs to be altered every time this view is changed
+          line = line - 70
+          if (line < 0){
+            pushToConsole(message, "error")
+          } else {
+            pushToConsole(`[${line}:${column}] ${message}`, "error")
+          }
+        }
+
+        let console = (function(systemConsole){
+          return {
+            log: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "log")
+              systemConsole.log.apply(this, args)
+            },
+            info: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "info")
+              systemConsole.info.apply(this, args)
+            },
+            warn: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "warn")
+              systemConsole.warn.apply(this, args)
+            },
+            error: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "error")
+              systemConsole.error.apply(this, args)
+            },
+            system: function(arg){
+              pushToConsole(arg, "system")
+            },
+            clear: function(){
+              systemConsole.clear.apply(this, {})
+            },
+            time: function(){
+              let args = Array.from(arguments)
+              systemConsole.time.apply(this, args)
+            },
+            assert: function(assertion, label){
+              if (!assertion){
+                pushToConsole(label, "log")
+              }
+
+              let args = Array.from(arguments)
+              systemConsole.assert.apply(this, args)
+            }
+          }
+        }(window.console))
+
+        window.console = { ...window.console, ...console }
+
+        console.system("Running fiddle")
+      }
+
+      if (window.parent){
+        customConsole(window)
+      }
+    </script>
+</head>
+<body>
+    <!DOCTYPE html>
 <html>
 
   <head>
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.js"></script>
     <script src='//cdn.jsdelivr.net/npm/tabletop@1.5.2/src/tabletop.min.js'></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="//unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script type = "text/javascript" src="function.js"></script>
-    <link rel="stylesheet" href="mystyle.css">
   </head>
 
   <body>
-    <h1>Dette er en test</h1>
       <div id="map-div"></div>
   </body>
 
+</html>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+var map = L.map('map-div').setView([60.1682653, 24.9422078], 5);
+var basemap = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Basemap (c) <a href="http://openstreetmap.org">OpenStreetMap</a>',
+  //minZoom: 5,
+  maxZoom: 100
+});
+basemap.addTo(map);
+
+
+var fg = L.featureGroup().addTo(map);
+function addPoints(data, tabletop) {
+	var line = L.polyline([]).addTo(map);
+	for (var row in data) {
+    var marker = L.marker([
+      data[row].Latitude,
+      data[row].Longitude
+    ]).addTo(fg);
+    line.addLatLng(marker.getLatLng());
+    marker.bindPopup('<strong>' + data[row].Info + '</strong>');
+  }
+  
+  map.fitBounds(fg.getBounds());
+}
+
+
+function init() {
+  Tabletop.init({
+    key: 'https://docs.google.com/spreadsheets/d/1Rs6xPlJ8pU4UFfmokjATaf4dArMWxQxZcyS-xRIIFuY/edit?usp=sharing',
+    callback: addPoints,
+    simpleSheet: true
+  });
+}
+init()
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "Lh2p61jy"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+    <script>
+      let allLines = []
+
+      window.addEventListener("message", (message) => {
+        if (message.data.console){
+          let insert = document.querySelector("#insert")
+          allLines.push(message.data.console.payload)
+          insert.innerHTML = allLines.join(";\r")
+
+          let result = eval.call(null, message.data.console.payload)
+          if (result !== undefined){
+            console.log(result)
+          }
+        }
+      })
+    </script>
+
+</body>
 </html>
