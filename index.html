@@ -8,6 +8,9 @@
     <script src="//unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   </head>
 
+  <body>
+      <div id="map-div"></div>
+	  
 <script>
 var map = L.map('map-div').setView([55.676098, 12.568337], 5);
 var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
@@ -42,10 +45,7 @@ function init() {
   });
 }
 init()
-</script>
-
-  <body>
-      <div id="map-div"></div>
+</script>	  
   </body>
 
 </html>
