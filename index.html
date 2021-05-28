@@ -48,7 +48,7 @@ function addPoints(data, tabletop) {
       data[row].Longitude
     ]).addTo(fg);
     line.addLatLng(marker.getLatLng());
-    marker.bindPopup('<strong>' + data[row].Info + '</strong>');
+    marker.bindPopup('<strong>' + data[row].Journey + '</strong>');
   }
   
   map.fitBounds(fg.getBounds());
