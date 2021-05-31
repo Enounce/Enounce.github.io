@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src='//cdn.jsdelivr.net/npm/tabletop@1.5.2/src/tabletop.min.js'></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <script src="//unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+	<style>
+	html, body{  
+   	height: 100%;
+   	width: 100%;
+}
+
+html, body{
+   margin: 0;
+   padding: 0;
+}
+		
+ #map-div {
+   height: 100%;
+   width: 100%;
+}
+	  </style>	  
+	  
+  </head>
+
+  <body>
+      <div id="map-div"></div>
+	  
+<script>
+var map = L.map('map-div').setView([55.676098, 12.568337], 5);
+var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+  attribution: 'Basemap (c) <a href="http://openstreetmap.org">OpenStreetMap</a>',
+  //minZoom: 5,
+  maxZoom: 100
+});
+basemap.addTo(map);
+
+
+var fg = L.featureGroup().addTo(map);
+function addPoints(data, tabletop) {
+	var line = L.polyline([]).addTo(map);
+	for (var row in data) {
+    var marker = L.marker([
+      data[row].Latitude,
+      data[row].Longitude
+    ]).addTo(fg);
+    line.addLatLng(marker.getLatLng());
+    marker.bindPopup('<strong>' + data[row].Journey + '</strong>');
+  }
+  
+  map.fitBounds(fg.getBounds());
+}
+
+
+function init() {
+  Tabletop.init({
+    key: 'https://docs.google.com/spreadsheets/d/1ea6TVw6CO4y_dBPB8TC813BvpsxelwlkoAiHis7CeCs/edit#gid=1001241610',
+    callback: addPoints,
+    simpleSheet: true
+  });
+}
+init()
+</script>	  
+  </body>
+
+</html>
