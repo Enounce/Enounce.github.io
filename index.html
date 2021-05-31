@@ -48,7 +48,7 @@ function addPoints(data, tabletop) {
       data[row].Longitude
     ]).addTo(fg);
     line.addLatLng(marker.getLatLng());
-    marker.bindPopup(data[row].Description, {
+    marker.bindPopup(data[row].Text, {
   maxWidth: "auto",
 });
   }
