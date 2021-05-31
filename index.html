@@ -48,7 +48,9 @@ function addPoints(data, tabletop) {
       data[row].Longitude
     ]).addTo(fg);
     line.addLatLng(marker.getLatLng());
-    marker.bindPopup('<strong>' + data[row].Journey + '</strong>');
+    marker.bindPopup(data[row].Description, {
+  maxWidth: "auto",
+});
   }
   
   map.fitBounds(fg.getBounds());
@@ -57,7 +59,7 @@ function addPoints(data, tabletop) {
 
 function init() {
   Tabletop.init({
-    key: 'https://docs.google.com/spreadsheets/d/1ea6TVw6CO4y_dBPB8TC813BvpsxelwlkoAiHis7CeCs/edit#gid=1001241610',
+    key: 'https://docs.google.com/spreadsheets/d/1E3lGrnmBvpaN_IClg5Gx0wqIPH-EYSyUGcDVRebfoxA/edit#gid=0',
     callback: addPoints,
     simpleSheet: true
   });
