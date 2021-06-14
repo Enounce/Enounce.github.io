@@ -1,202 +1,107 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Leaflet Destinations Panal</title>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="googlebot" content="noindex, nofollow">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-  <script
-    type="text/javascript"
-    src="/js/lib/dummy.js"
+  <head>
+        <script src='//cdn.jsdelivr.net/npm/tabletop@1.5.2/src/tabletop.min.js'></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="//unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     
-  ></script>
+    <div id="map-div"></div>
 
-    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+<button id="refreshButton">
+          <a href="Mainpage.htm" style="color: black; text-decoration: none;"><strong>Home longer</strong></a>
+        </button>
 
-
-  <style id="compiled-css" type="text/css">
-      html, body{  
-   height: 99%;
-   width: 99%;
+	<style>
+	html, body{  
+   	height: 100%;
+   	width: 100%;
 }
 
-
+html, body{
+   margin: 0;
+   padding: 0;
+}
+		
  #map-div {
    height: 100%;
    width: 100%;
 }
-    /* EOS */
-  </style>
 
-  <script id="insert"></script>
-
-
-    <script src="/js/stringify.js?52c580aef7aa99af3b5f5e894938ffee58cc70e5" charset="utf-8"></script>
-    <script>
-      const customConsole = (w) => {
-        const pushToConsole = (payload, type) => {
-          w.parent.postMessage({
-            console: {
-              payload: stringify(payload),
-              type:    type
-            }
-          }, "*")
-        }
-
-        w.onerror = (message, url, line, column) => {
-          // the line needs to correspond with the editor panel
-          // unfortunately this number needs to be altered every time this view is changed
-          line = line - 70
-          if (line < 0){
-            pushToConsole(message, "error")
-          } else {
-            pushToConsole(`[${line}:${column}] ${message}`, "error")
-          }
-        }
-
-        let console = (function(systemConsole){
-          return {
-            log: function(){
-              let args = Array.from(arguments)
-              pushToConsole(args, "log")
-              systemConsole.log.apply(this, args)
-            },
-            info: function(){
-              let args = Array.from(arguments)
-              pushToConsole(args, "info")
-              systemConsole.info.apply(this, args)
-            },
-            warn: function(){
-              let args = Array.from(arguments)
-              pushToConsole(args, "warn")
-              systemConsole.warn.apply(this, args)
-            },
-            error: function(){
-              let args = Array.from(arguments)
-              pushToConsole(args, "error")
-              systemConsole.error.apply(this, args)
-            },
-            system: function(arg){
-              pushToConsole(arg, "system")
-            },
-            clear: function(){
-              systemConsole.clear.apply(this, {})
-            },
-            time: function(){
-              let args = Array.from(arguments)
-              systemConsole.time.apply(this, args)
-            },
-            assert: function(assertion, label){
-              if (!assertion){
-                pushToConsole(label, "log")
-              }
-
-              let args = Array.from(arguments)
-              systemConsole.assert.apply(this, args)
-            }
-          }
-        }(window.console))
-
-        window.console = { ...window.console, ...console }
-
-        console.system("Running fiddle")
-      }
-
-      if (window.parent){
-        customConsole(window)
-      }
-    </script>
-</head>
-<body>
-    <!DOCTYPE html>
-<html>
-
-  <head>
-    <script src='//cdn.jsdelivr.net/npm/tabletop@1.5.2/src/tabletop.min.js'></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="//unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+#refreshButton{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    height: 35px;
+    background-color: white;
+    border-radius: 5px;
+    border-color: silver;
+    border-style: solid;
+    border-width: 2px 2px 2px 2px;
+    opacity: 1;
+    text-align: center;
+    z-index: 500;
+}
+#refreshButton:hover{
+    background-color: #F8F8F8;
+    cursor: pointer;
+}
+	  </style>	  
+	  
   </head>
 
   <body>
       <div id="map-div"></div>
-  </body>
-
-</html>
-
-
-    <script type="text/javascript">//<![CDATA[
-
-
-var map = L.map('map-div').setView([60.1682653, 24.9422078], 5);
-var basemap = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	  <button id="refreshButton">
+          <a href="index2.html" style="color: black; text-decoration: none;"><strong>View all attractions</strong></a>
+        </button>
+	  
+<script>
+var map = L.map('map-div').setView([55.676098, 12.568337], 5);
+var basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
   attribution: 'Basemap (c) <a href="http://openstreetmap.org">OpenStreetMap</a>',
   //minZoom: 5,
-  maxZoom: 100
+  maxZoom: 18
 });
 basemap.addTo(map);
 
+var greenIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
+// Markers with polyline
 var fg = L.featureGroup().addTo(map);
 function addPoints(data, tabletop) {
-	var line = L.polyline([]).addTo(map);
 	for (var row in data) {
     var marker = L.marker([
-      data[row].Latitude,
-      data[row].Longitude
-    ]).addTo(fg);
-    line.addLatLng(marker.getLatLng());
-    marker.bindPopup('<strong>' + data[row].Info + '</strong>');
+      data[row].Latitude2,
+      data[row].Longitude2
+    ], {icon: greenIcon}).addTo(fg);
+    marker.bindPopup(data[row].Text2, {
+  maxWidth: "auto",
+});
   }
   
   map.fitBounds(fg.getBounds());
 }
 
-
+// Some tabletop stuff
 function init() {
   Tabletop.init({
-    key: 'https://docs.google.com/spreadsheets/d/1Rs6xPlJ8pU4UFfmokjATaf4dArMWxQxZcyS-xRIIFuY/edit?usp=sharing',
+    key: 'https://docs.google.com/spreadsheets/d/1E3lGrnmBvpaN_IClg5Gx0wqIPH-EYSyUGcDVRebfoxA/edit#gid=200264648',
     callback: addPoints,
     simpleSheet: true
   });
 }
 init()
+</script>	  
+  </body>
 
-
-  //]]></script>
-
-  <script>
-    // tell the embed parent frame the height of the content
-    if (window.parent && window.parent.parent){
-      window.parent.parent.postMessage(["resultsFrame", {
-        height: document.body.getBoundingClientRect().height,
-        slug: "Lh2p61jy"
-      }], "*")
-    }
-
-    // always overwrite window.name, in case users try to set it manually
-    window.name = "result"
-  </script>
-
-    <script>
-      let allLines = []
-
-      window.addEventListener("message", (message) => {
-        if (message.data.console){
-          let insert = document.querySelector("#insert")
-          allLines.push(message.data.console.payload)
-          insert.innerHTML = allLines.join(";\r")
-
-          let result = eval.call(null, message.data.console.payload)
-          if (result !== undefined){
-            console.log(result)
-          }
-        }
-      })
-    </script>
-
-</body>
 </html>
